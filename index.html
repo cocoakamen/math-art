@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学アートギャラリー ✨</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.js"></script>
+</head>
+<body>
+    <header>
+        <h1>✨ 数学アートギャラリー ✨</h1>
+        <p>美しい数学の世界をインタラクティブに体験してください</p>
+    </header>
+
+    <div class="container">
+        <!-- 作品リスト -->
+        <aside class="artwork-list">
+            <h2>作品一覧</h2>
+            <ul id="artworkMenu">
+                <!-- JavaScriptで動的に生成されます -->
+            </ul>
+        </aside>
+
+        <!-- 作品表示エリア -->
+        <main class="artwork-display">
+            <div class="artwork-info">
+                <h2 id="artworkTitle">作品を選んでください</h2>
+                <p id="artworkDescription">左のメニューから作品を選択してください</p>
+            </div>
+            <div id="canvasContainer">
+                <!-- p5.jsのキャンバスがここに表示されます -->
+            </div>
+        </main>
+    </div>
+
+    <script src="js/artworks/circle.js"></script>
+    <script src="js/artworks/dummy.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
