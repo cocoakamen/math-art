@@ -46,8 +46,11 @@ function selectArtwork(artworkId) {
     const artwork = artworks.find(a => a.id === artworkId);
     if (!artwork) return;
     
-    // 現在の作品と同じ場合は何もしない
-    if (currentArtworkId === artworkId) return;
+    // 現在の作品と同じ場合はスクロールのみ
+    if (currentArtworkId === artworkId) {
+        scrollToArtwork();
+        return;
+    }
     
     currentArtworkId = artworkId;
     
@@ -59,6 +62,12 @@ function selectArtwork(artworkId) {
     
     // p5.jsインスタンスを再作成
     recreateP5Instance(artwork);
+    
+    // スマホ画面でキャンバスまでスクロール
+    scrollToArtwork();
+    
+    // 戻るボタンを表示
+    showBackToMenuButton();
 }
 
 // メニューのアクティブ状態を更新
@@ -93,4 +102,44 @@ function recreateP5Instance(artwork) {
     
     // 新しいp5.jsインスタンスを作成
     currentP5Instance = new p5(artwork.sketch, 'canvasContainer');
+}
+
+// スマホ画面で作品表示エリアまでスクロール
+function scrollToArtwork() {
+    // 768px以下（タブレット・スマホ）の場合のみスクロール
+    if (window.innerWidth <= 768) {
+        const canvasContainer = document.getElementById('canvasContainer');
+        if (canvasContainer) {
+            // キャンバスが完全に見えるように、少し余裕を持ってスクロール
+            setTimeout(() => {
+                canvasContainer.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center'  // 'start'から'center'に変更
+                });
+            }, 100); // キャンバス生成を待つ
+        }
+    }
+}
+
+// メニューまでスクロール
+function scrollToMenu() {
+    const artworkList = document.querySelector('.artwork-list');
+    if (artworkList) {
+        artworkList.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+}
+
+// 戻るボタンの表示
+function showBackToMenuButton() {
+    if (window.innerWidth <= 768) {
+        const backBtn = document.getElementById('backToMenuBtn');
+        if (backBtn) {
+            backBtn.style.display = 'block';
+            // イベントリスナーが重複しないように一度削除してから追加
+            backBtn.onclick = scrollToMenu;
+        }
+    }
 }
