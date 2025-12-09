@@ -7,8 +7,20 @@ const circleArtwork = {
     
     sketch: (p) => {
         p.setup = () => {
-            p.createCanvas(700, 500); // キャンバスを作成（幅700px、高さ500px）
+            // コンテナのサイズに合わせてキャンバスを作成
+            const container = document.getElementById('canvasContainer');
+            const w = container.offsetWidth - 20; // パディング分を考慮
+            const h = Math.max(300, Math.min(500, w * 0.7)); // 高さは幅の70%（最小300、最大500）
+            p.createCanvas(w, h);
             p.colorMode(p.HSB, 360, 100, 100, 100); // HSBカラーモードに設定（色相0-360、彩度0-100、明度0-100、透明度0-100）
+        };
+        
+        // ウィンドウリサイズ時の対応
+        p.windowResized = () => {
+            const container = document.getElementById('canvasContainer');
+            const w = container.offsetWidth - 20;
+            const h = Math.max(300, Math.min(500, w * 0.7));
+            p.resizeCanvas(w, h);
         };
         
         p.draw = () => {

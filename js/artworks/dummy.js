@@ -7,8 +7,20 @@ const createDummyArtwork = (id, title, description) => ({
     
     sketch: (p) => {
         p.setup = () => {
-            p.createCanvas(700, 500);
+            // コンテナのサイズに合わせてキャンバスを作成
+            const container = document.getElementById('canvasContainer');
+            const w = container.offsetWidth - 20; // パディング分を考慮
+            const h = Math.max(300, Math.min(500, w * 0.7)); // 高さは幅の70%（最小300、最大500）
+            p.createCanvas(w, h);
             p.textAlign(p.CENTER, p.CENTER);
+        };
+        
+        // ウィンドウリサイズ時の対応
+        p.windowResized = () => {
+            const container = document.getElementById('canvasContainer');
+            const w = container.offsetWidth - 20;
+            const h = Math.max(300, Math.min(500, w * 0.7));
+            p.resizeCanvas(w, h);
         };
         
         p.draw = () => {
@@ -23,11 +35,14 @@ const createDummyArtwork = (id, title, description) => ({
             // Coming Soon テキスト
             p.fill(255, 255, 255, 200);
             p.noStroke();
-            p.textSize(48);
+            // 画面幅に応じてテキストサイズを調整
+            const mainTextSize = p.width < 400 ? 28 : 48;
+            const subTextSize = p.width < 400 ? 16 : 24;
+            p.textSize(mainTextSize);
             p.textFont('Arial');
             p.text('Coming Soon ✨', p.width / 2, p.height / 2 - 30);
             
-            p.textSize(24);
+            p.textSize(subTextSize);
             p.fill(255, 255, 255, 150);
             p.text('この作品は準備中です', p.width / 2, p.height / 2 + 30);
             
