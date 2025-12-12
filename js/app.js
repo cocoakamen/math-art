@@ -1,7 +1,7 @@
 // 全作品のリスト
 const artworks = [
     circleArtwork,
-    dummyArtwork1,
+    spiralArtwork,
     dummyArtwork2,
     dummyArtwork3,
     dummyArtwork4,
