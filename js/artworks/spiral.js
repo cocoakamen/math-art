@@ -32,11 +32,12 @@ const spiralArtwork = {
             p.translate(p.width / 2, p.height / 2); // 座標系の原点を画面中央に移動
             
             // マウスの位置で螺旋の密度とサイズを制御
-            let spiralDensity = p.map(p.mouseX, 0, p.width, 0.05, 0.2); // 螺旋の密度（radian単位、大きいほど粗い）
+            let spiralDensity = p.map(p.mouseX, 0, p.width, 0.08, 0.18); // 螺旋の密度（ステップ幅、小さいほど滑らか）
+            let lineWeight = p.map(p.mouseX, 0, p.width, 0.5, 5); // 線の太さ（密なら細く、粗いなら太く）
             let maxRadius = p.map(p.mouseY, 0, p.height, 100, 250); // 最大半径
             
             // フィボナッチ螺旋を描画
-            drawFibonacciSpiral(maxRadius, spiralDensity);
+            drawFibonacciSpiral(maxRadius, spiralDensity, lineWeight);
             
             // 黄金角（約137.5度）で配置された点を描画
             drawGoldenAnglePoints(maxRadius);
@@ -67,20 +68,21 @@ const spiralArtwork = {
          * 美しい螺旋状のカーブが描かれます。
          * 
          * @param {number} maxRadius - 螺旋の最大半径（マウスのY座標で変化）
-         * @param {number} density - 螺旋の密度（radian単位、値が小さいほど密）
+         * @param {number} stepSize - 螺旋の描画ステップ幅（値が小さいほど密）
+         * @param {number} weight - 線の太さ
          */
-        function drawFibonacciSpiral(maxRadius, density) {
+        function drawFibonacciSpiral(maxRadius, stepSize, weight) {
             p.noFill(); // 図形の塗りつぶしをなしに設定
-            p.strokeWeight(2); // 線の太さを2pxに設定
+            p.strokeWeight(weight); // 線の太さを設定
             
             // 螺旋を6本描画して、花びらのようなパターンを作成
             // offsetでπ/3ずつ（60度）回転させた位置に配置
             for (let offset = 0; offset < p.TWO_PI; offset += p.TWO_PI / 6) {
                 p.beginShape(); // 連続した点を線で結ぶ図形の描画を開始
                 
-                // 角度0から4π（2回転分）まで螺旋を描画
-                // densityの値で点の間隔が変わる（小さいほど滑らかな螺旋になる）
-                for (let theta = 0; theta < p.TWO_PI * 2; theta += density) {
+                // 螺旋の長さは固定（2回転分）、ステップ幅で密度を制御
+                // stepSizeが小さいと点が多く描画され、密に見える
+                for (let theta = 0; theta < p.TWO_PI * 2; theta += stepSize) {
                     // 数学的計算: 対数螺旋の公式 r = a × φ^(θ / (π/2))
                     // thetaはすでにradian単位なので変換不要
                     
