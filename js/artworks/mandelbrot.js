@@ -19,6 +19,7 @@ const mandelbrotArtwork = {
             p.createCanvas(w, h);
             p.colorMode(p.HSB, 360, 100, 100); // HSBカラーモードに設定
             p.noLoop(); // setup時に1回のみ描画（動的変更時に再描画）
+            p.redraw(); // 初回描画を実行
         };
         
         // ウィンドウリサイズ時の対応
@@ -31,22 +32,31 @@ const mandelbrotArtwork = {
         };
         
         /**
-         * クリックした位置を中心にズームイン/アウト
-         * クリック: ズームイン（2倍に拡大）
-         * Shift+クリック: ズームアウト（0.5倍に縮小）
+         * クリック/タッチした位置を中心にズームイン/アウト
+         * クリック/タップ: ズームイン（2倍に拡大）
+         * 長押し（0.5秒以上）: ズームアウト（0.5倍に縮小）
          */
+        let touchStartTime = 0;
+        
         p.mousePressed = () => {
+            touchStartTime = p.millis(); // タッチ開始時刻を記録
+            return false; // デフォルトの動作を防ぐ
+        };
+        
+        p.mouseReleased = () => {
             // キャンバス内のクリックかチェック
             if (p.mouseX < 0 || p.mouseX > p.width || p.mouseY < 0 || p.mouseY > p.height) {
                 return;
             }
             
+            let touchDuration = p.millis() - touchStartTime; // タッチの長さ
+            
             // クリック位置のピクセル座標を複素平面の座標に変換
             let clickedA = p.map(p.mouseX, 0, p.width, -2.5 / zoom + offsetX, 1.0 / zoom + offsetX);
             let clickedB = p.map(p.mouseY, 0, p.height, -1.0 / zoom + offsetY, 1.0 / zoom + offsetY);
             
-            // Shiftキーが押されていたらズームアウト、そうでなければズームイン
-            if (p.keyIsDown(p.SHIFT)) {
+            // 0.5秒以上の長押しでズームアウト、短いタップでズームイン
+            if (touchDuration > 500 || p.keyIsDown(p.SHIFT)) {
                 zoom = zoom / 2; // ズームアウト
                 if (zoom < 0.5) zoom = 0.5; // 最小ズーム制限
             } else {
@@ -59,6 +69,7 @@ const mandelbrotArtwork = {
             offsetY = clickedB;
             
             p.redraw(); // 再描画
+            return false; // デフォルトの動作を防ぐ
         };
         
         p.draw = () => {
@@ -154,7 +165,7 @@ const mandelbrotArtwork = {
             p.textAlign(p.LEFT, p.BOTTOM);
             p.text(`ズーム: ${zoom.toFixed(2)}x | 反復回数: ${maxIterations}`, 10, p.height - 10);
             p.textAlign(p.RIGHT, p.BOTTOM);
-            p.text('クリック:拡大 | Shift+クリック:縮小 ✨', p.width - 10, p.height - 10);
+            p.text('タップ:拡大 | 長押し:縮小 ✨', p.width - 10, p.height - 10);
         };
     }
 };
