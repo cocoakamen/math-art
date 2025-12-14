@@ -2,7 +2,7 @@
 const artworks = [
     circleArtwork,
     spiralArtwork,
-    dummyArtwork2,
+    mandelbrotArtwork,
     dummyArtwork3,
     dummyArtwork4,
     dummyArtwork5,
