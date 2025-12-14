@@ -17,8 +17,10 @@ const mandelbrotArtwork = {
             const w = container.offsetWidth - 20; // パディング分を考慮
             const h = Math.max(300, Math.min(500, w * 0.7)); // 高さは幅の70%（最小300、最大500）
             p.createCanvas(w, h);
+            p.pixelDensity(1); // ピクセル密度を1に固定（Retina対応を無効化）
             p.colorMode(p.HSB, 360, 100, 100); // HSBカラーモードに設定
-            // noLoop()を設定すると、setup後に自動的に1回だけdraw()が呼ばれる
+            p.noLoop(); // クリックやリサイズ時のみ描画
+            // setup完了後、p5.jsが自動的に1回だけdraw()を呼び出す
         };
         
         // ウィンドウリサイズ時の対応
@@ -72,6 +74,9 @@ const mandelbrotArtwork = {
         };
         
         p.draw = () => {
+            // 背景をクリア
+            p.background(255);
+            
             p.loadPixels(); // ピクセルデータへのアクセスを開始
             
             /**

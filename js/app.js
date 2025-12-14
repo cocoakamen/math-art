@@ -14,6 +14,7 @@ const artworks = [
 
 let currentP5Instance = null;
 let currentArtworkId = null;
+let isCreatingArtwork = false; // 作品作成中フラグ
 
 // ページ読み込み時の初期化
 document.addEventListener('DOMContentLoaded', () => {
@@ -45,6 +46,11 @@ function initArtworkMenu() {
 
 // 作品の選択
 function selectArtwork(artworkId) {
+    // 作品作成中は処理をスキップ（連続クリック防止）
+    if (isCreatingArtwork) {
+        return;
+    }
+    
     const artwork = artworks.find(a => a.id === artworkId);
     if (!artwork) return;
     
@@ -54,6 +60,7 @@ function selectArtwork(artworkId) {
         return;
     }
     
+    isCreatingArtwork = true; // フラグを立てる
     currentArtworkId = artworkId;
     
     // メニューのアクティブ状態を更新
@@ -64,6 +71,11 @@ function selectArtwork(artworkId) {
     
     // p5.jsインスタンスを再作成
     recreateP5Instance(artwork);
+    
+    // フラグを下ろす（少し遅延を入れて確実に）
+    setTimeout(() => {
+        isCreatingArtwork = false;
+    }, 500);
     
     // スマホ画面でキャンバスまでスクロール
     scrollToArtwork();
