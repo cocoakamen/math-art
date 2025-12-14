@@ -33,9 +33,11 @@ function initArtworkMenu() {
             li.classList.add('coming-soon');
         }
         
-        li.addEventListener('click', () => {
+        // スマホでの二重起動を防ぐため、clickイベントのみを使用
+        li.addEventListener('click', (e) => {
+            e.preventDefault(); // デフォルト動作を防止
             selectArtwork(artwork.id);
-        });
+        }, { passive: false });
         
         menuElement.appendChild(li);
     });

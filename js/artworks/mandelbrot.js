@@ -18,8 +18,7 @@ const mandelbrotArtwork = {
             const h = Math.max(300, Math.min(500, w * 0.7)); // 高さは幅の70%（最小300、最大500）
             p.createCanvas(w, h);
             p.colorMode(p.HSB, 360, 100, 100); // HSBカラーモードに設定
-            p.noLoop(); // setup時に1回のみ描画（動的変更時に再描画）
-            p.redraw(); // 初回描画を実行
+            // noLoop()を設定すると、setup後に自動的に1回だけdraw()が呼ばれる
         };
         
         // ウィンドウリサイズ時の対応
