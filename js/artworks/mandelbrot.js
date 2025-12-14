@@ -6,9 +6,9 @@ const mandelbrotArtwork = {
     isDummy: false,
     
     sketch: (p) => {
-        let maxIterations = 100; // 最大反復回数
-        let zoom = 1; // ズームレベル
-        let offsetX = -0.5; // X軸オフセット
+        let maxIterations = 300; // 最大反復回数
+        let zoom = 1.5; // ズームレベル
+        let offsetX = -0.7; // X軸オフセット（境界の面白い部分を表示）
         let offsetY = 0; // Y軸オフセット
         
         p.setup = () => {
@@ -31,18 +31,34 @@ const mandelbrotArtwork = {
         };
         
         /**
-         * マウスが動いたときにパラメータを更新
-         * マウスX: ズームレベルを制御（左で広域、右で詳細）
-         * マウスY: 反復回数を制御（上で少なく、下で多く）
+         * クリックした位置を中心にズームイン/アウト
+         * クリック: ズームイン（2倍に拡大）
+         * Shift+クリック: ズームアウト（0.5倍に縮小）
          */
-        p.mouseMoved = () => {
-            // マウスX座標でズームを制御（1〜4倍）
-            zoom = p.map(p.mouseX, 0, p.width, 1, 4);
+        p.mousePressed = () => {
+            // キャンバス内のクリックかチェック
+            if (p.mouseX < 0 || p.mouseX > p.width || p.mouseY < 0 || p.mouseY > p.height) {
+                return;
+            }
             
-            // マウスY座標で反復回数を制御（50〜200回）
-            maxIterations = p.floor(p.map(p.mouseY, 0, p.height, 50, 200));
+            // クリック位置のピクセル座標を複素平面の座標に変換
+            let clickedA = p.map(p.mouseX, 0, p.width, -2.5 / zoom + offsetX, 1.0 / zoom + offsetX);
+            let clickedB = p.map(p.mouseY, 0, p.height, -1.0 / zoom + offsetY, 1.0 / zoom + offsetY);
             
-            p.redraw(); // パラメータ変更時に再描画
+            // Shiftキーが押されていたらズームアウト、そうでなければズームイン
+            if (p.keyIsDown(p.SHIFT)) {
+                zoom = zoom / 2; // ズームアウト
+                if (zoom < 0.5) zoom = 0.5; // 最小ズーム制限
+            } else {
+                zoom = zoom * 2; // ズームイン
+                if (zoom > 1000) zoom = 1000; // 最大ズーム制限
+            }
+            
+            // クリックした位置を新しい中心にする
+            offsetX = clickedA;
+            offsetY = clickedB;
+            
+            p.redraw(); // 再描画
         };
         
         p.draw = () => {
@@ -98,24 +114,30 @@ const mandelbrotArtwork = {
                     }
                     
                     // 色を計算
-                    let bright, hue;
+                    let bright, hue, saturation;
                     if (n === maxIterations) {
-                        // 発散しなかった点（マンデルブロ集合に属する）は黒
-                        bright = 0;
-                        hue = 0;
+                        // 発散しなかった点（マンデルブロ集合に属する）は淡いピンク
+                        hue = 340; // ピンク系の色相
+                        saturation = 20; // 低彩度で淡く
+                        bright = 95; // 高明度で明るく
                     } else {
-                        // 発散した点は、反復回数に応じて色付け
-                        // スムーズな色のグラデーションを作る
-                        hue = p.map(n, 0, maxIterations, 180, 360);
-                        bright = p.map(n, 0, maxIterations, 50, 100);
+                        // 発散した点は、反復回数に応じてパステルカラーで色付け
+                        // 対数スケールでスムーズな色のグラデーションを作る
+                        let smoothN = n + 1 - p.log(p.log(za * za + zb * zb)) / p.log(2);
                         
-                        // 対数スケールでスムーズに（オプション）
-                        hue = p.map(p.sqrt(n), 0, p.sqrt(maxIterations), 180, 360);
+                        // 全色相範囲(0-360度)を使ってグラデーション
+                        hue = p.map(smoothN, 0, maxIterations, 0, 360) % 360;
+                        
+                        // パステルカラー: 低彩度（30-50%）
+                        saturation = p.map(smoothN, 0, maxIterations, 30, 50);
+                        
+                        // パステルカラー: 高明度（75-95%）
+                        bright = p.map(smoothN, 0, maxIterations, 75, 95);
                     }
                     
                     // ピクセルに色を設定
                     let pix = (x + y * p.width) * 4; // ピクセル配列のインデックス
-                    let c = p.color(hue, 80, bright);
+                    let c = p.color(hue, saturation, bright);
                     p.pixels[pix + 0] = p.red(c); // R
                     p.pixels[pix + 1] = p.green(c); // G
                     p.pixels[pix + 2] = p.blue(c); // B
@@ -132,7 +154,7 @@ const mandelbrotArtwork = {
             p.textAlign(p.LEFT, p.BOTTOM);
             p.text(`ズーム: ${zoom.toFixed(2)}x | 反復回数: ${maxIterations}`, 10, p.height - 10);
             p.textAlign(p.RIGHT, p.BOTTOM);
-            p.text('マウスを動かしてパラメータを変更 ✨', p.width - 10, p.height - 10);
+            p.text('クリック:拡大 | Shift+クリック:縮小 ✨', p.width - 10, p.height - 10);
         };
     }
 };
