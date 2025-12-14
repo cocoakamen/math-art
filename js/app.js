@@ -3,11 +3,11 @@ const artworks = [
     circleArtwork,
     spiralArtwork,
     mandelbrotArtwork,
+    polygonArtwork,
     dummyArtwork3,
     dummyArtwork4,
     dummyArtwork5,
     dummyArtwork6,
-    dummyArtwork7,
     dummyArtwork8,
     dummyArtwork9
 ];
