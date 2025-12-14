@@ -78,7 +78,7 @@ const spiralArtwork = {
             // 螺旋を6本描画して、花びらのようなパターンを作成
             // offsetでπ/3ずつ（60度）回転させた位置に配置
             for (let offset = 0; offset < p.TWO_PI; offset += p.TWO_PI / 6) {
-                p.beginShape(); // 連続した点を線で結ぶ図形の描画を開始
+                let prevX, prevY;
                 
                 // 螺旋の長さは固定（2回転分）、ステップ幅で密度を制御
                 // stepSizeが小さいと点が多く描画され、密に見える
@@ -98,15 +98,24 @@ const spiralArtwork = {
                     let x = r * p.cos(theta + offset + angle);
                     let y = r * p.sin(theta + offset + angle);
                     
-                    // 色相を半径に基づいて変化（外側ほど色が変わる）
-                    // 180〜360の範囲で色相が変化（青紫〜赤紫のグラデーション）
-                    let hue = (r / maxRadius) * 180 + 180;
-                    p.stroke(hue, 80, 90, 70); // 線の色を設定（色相, 彩度, 明度, 透明度）- HSBカラーモード
+                    // 色相を半径に基づいて変化（対数スケール + 非線形マッピング）
+                    // 対数螺旋なので、log(r)を使って線形にマッピング
+                    let minR = maxRadius / 10;
+                    let linearProgress = p.log(r / minR) / p.log(maxRadius / minR); // 0〜1
+                    // 平方根で変換して、内側でもっと色が変わるように
+                    let progress = p.sqrt(linearProgress); // 0〜1（内側の変化を強調）
+                    let hue = (320 + progress * 100) % 360; // ピンク→赤→オレンジ→黄色（暖色系）
+                    let brightness = 75 + progress * 25; // 明るく変化
+                    p.stroke(hue, 90, brightness, 75); // 線の色を設定（色相, 彩度, 明度, 透明度）- HSBカラーモード
                     
-                    p.vertex(x, y); // 計算した座標に頂点を追加（これらの点が線で結ばれる）
+                    // 前の点があれば、線分で接続
+                    if (prevX !== undefined) {
+                        p.line(prevX, prevY, x, y);
+                    }
+                    
+                    prevX = x;
+                    prevY = y;
                 }
-                
-                p.endShape(); // 図形の描画を終了
             }
         }
         
