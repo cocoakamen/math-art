@@ -26,7 +26,7 @@ const polygonArtwork = {
         };
         
         p.draw = () => {
-            p.background(0, 0, 10); // 背景色を設定（ほぼ黒）
+            p.background(0, 0, 95); // 背景色を設定（明るいパステル調）
             
             // 時間を進める
             time += 0.01;
@@ -77,10 +77,10 @@ const polygonArtwork = {
         function drawPolygon(p, sides, radius, hue, alpha) {
             // sides: 頂点数（小数点OK）、radius: 半径、hue: 色相、alpha: 透明度
             
-            // 塗りつぶしの設定
-            p.fill(hue, 80, 90, alpha);
-            p.stroke(hue, 100, 100, alpha);
-            p.strokeWeight(2);
+            // パステルトーンの設定（彩度を低く、明度を高く）
+            p.fill(hue, 35, 95, alpha);
+            p.stroke(hue, 50, 85, alpha);
+            p.strokeWeight(1.5);
             
             // 多角形の描画開始
             p.beginShape();
