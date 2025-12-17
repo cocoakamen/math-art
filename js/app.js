@@ -2,6 +2,7 @@
 const artworks = [
     circleArtwork,
     spiralArtwork,
+    waveArtwork,
     mandelbrotArtwork,
     polygonArtwork,
     dummyArtwork3,
