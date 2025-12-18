@@ -47,9 +47,8 @@ const waveArtwork = {
             drawGradientBackground();
             
             // マウスの位置で波のパラメータを変化させる
-            // p.map() は値の範囲を変換する便利な関数
-            let frequency = p.map(p.mouseX, 0, p.width, 1, 5); // 周波数: マウス左で1波、右で5波
-            let amplitude = p.map(p.mouseY, 0, p.height, 20, 100); // 振幅: マウス上で小さく、下で大きく
+            let frequency = p.map(p.mouseX, 0, p.width, 1, 5); // map: マウスX座標(0~画面幅)を周波数(1~5)に変換
+            let amplitude = p.map(p.mouseY, 0, p.height, 20, 100); // map: マウスY座標(0~画面高さ)を振幅(20~100)に変換
             
             // 複数の波を重ねて描画（異なる高さと色で表示）
             drawSineWave(p.height * 0.3, amplitude, frequency, time, 0, 2); // 上段: 赤系
@@ -70,9 +69,8 @@ const waveArtwork = {
          */
         function drawGradientBackground() {
             for (let y = 0; y < p.height; y++) {
-                // 上から下へ色相を変化（青→紫系）
-                let hue = p.map(y, 0, p.height, 200, 260);
-                let brightness = p.map(y, 0, p.height, 95, 85);
+                let hue = p.map(y, 0, p.height, 200, 260); // map: Y座標(0~画面高さ)を色相(200~260=青→紫)に変換
+                let brightness = p.map(y, 0, p.height, 95, 85); // map: Y座標(0~画面高さ)を明度(95~85)に変換
                 p.stroke(hue, 30, brightness); // 線の色を設定
                 p.line(0, y, p.width, y); // 横一本の線を描画
             }
@@ -106,8 +104,7 @@ const waveArtwork = {
                 // y座標をsin関数で計算
                 let y = yOffset + p.sin(angle) * amplitude;
                 
-                // 波の位置に応じて明るさを変化させる
-                let brightness = p.map(x, 0, p.width, 60, 90);
+                let brightness = p.map(x, 0, p.width, 60, 90); // map: X座標(0~画面幅)を明度(60~90)に変換
                 p.stroke(hue, 70, brightness, 80); // 半透明
                 
                 p.vertex(x, y); // 点を追加
@@ -150,7 +147,7 @@ const waveArtwork = {
                 let angle = (x / p.width) * p.TWO_PI * frequency + phase;
                 let y = yOffset + p.cos(angle) * amplitude; // sin の代わりに cos を使用
                 
-                let brightness = p.map(x, 0, p.width, 60, 90);
+                let brightness = p.map(x, 0, p.width, 60, 90); // map: X座標(0~画面幅)を明度(60~90)に変換
                 p.stroke(hue, 70, brightness, 80);
                 
                 p.vertex(x, y);
@@ -199,7 +196,7 @@ const waveArtwork = {
                 // 1.3倍することで、少し周波数をずらして面白い模様を作る
                 let y = yOffset + (p.sin(angle) + p.cos(angle * 1.3)) * amplitude * 0.4;
                 
-                let brightness = p.map(x, 0, p.width, 60, 90);
+                let brightness = p.map(x, 0, p.width, 60, 90); // map: X座標(0~画面幅)を明度(60~90)に変換
                 p.stroke(hue, 70, brightness, 60); // 少し薄めに表示
                 
                 p.vertex(x, y);
