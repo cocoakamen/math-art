@@ -178,6 +178,10 @@ const waveArtwork = {
          * これは「フーリエ変換」という数学の考え方につながります：
          * どんな複雑な波も、単純な sin/cos 波の組み合わせで表現できる！
          * 
+         * 【使用している定数の意味】
+         * - 1.3: 周波数の比率（整数比ではない値を使うと、規則的すぎない面白いパターンになる）
+         * - 0.4: 振幅の調整係数（2つの波を足すと大きくなりすぎるので、0.4倍して他の波と調和させる）
+         * 
          * @param {number} yOffset - Y軸の中心位置
          * @param {number} amplitude - 振幅
          * @param {number} frequency - 周波数
@@ -193,7 +197,6 @@ const waveArtwork = {
             for (let x = 0; x <= p.width; x += 3) {
                 let angle = (x / p.width) * p.TWO_PI * frequency + phase;
                 // sin(angle) と cos(angle * 1.3) を足し合わせる
-                // 1.3倍することで、少し周波数をずらして面白い模様を作る
                 let y = yOffset + (p.sin(angle) + p.cos(angle * 1.3)) * amplitude * 0.4;
                 
                 let brightness = p.map(x, 0, p.width, 60, 90); // map: X座標(0~画面幅)を明度(60~90)に変換
