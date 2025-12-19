@@ -23,6 +23,8 @@ const waveArtwork = {
     sketch: (p) => {
         // 時間変数：アニメーションで使用（波が動いて見える）
         let time = 0;
+        // 背景画像をキャッシュする変数（パフォーマンス最適化のため）
+        let backgroundGraphics = null;
         
         p.setup = () => {
             // 最初に一度だけ実行される初期設定
@@ -31,6 +33,9 @@ const waveArtwork = {
             const h = Math.max(300, Math.min(500, w * 0.7)); // 高さを計算
             p.createCanvas(w, h); // キャンバスを作成
             p.colorMode(p.HSB, 360, 100, 100, 100); // HSBカラーモード（色相、彩度、明度）
+            
+            // 背景を一度だけ描画してキャッシュ（パフォーマンス向上）
+            createBackgroundCache();
         };
         
         // ウィンドウサイズが変わったときに呼ばれる
@@ -39,12 +44,15 @@ const waveArtwork = {
             const w = container.offsetWidth - 20;
             const h = Math.max(300, Math.min(500, w * 0.7));
             p.resizeCanvas(w, h); // キャンバスサイズを調整
+            
+            // 背景を再作成（サイズが変わったため）
+            createBackgroundCache();
         };
         
         // 毎フレーム（1秒間に約60回）実行される描画処理
         p.draw = () => {
-            // 背景にグラデーションを描画
-            drawGradientBackground();
+            // キャッシュした背景を描画（毎回グラデーションを描くより高速）
+            p.image(backgroundGraphics, 0, 0);
             
             // マウスの位置で波のパラメータを変化させる
             let frequency = p.map(p.mouseX, 0, p.width, 1, 5); // map: マウスX座標(0~画面幅)を周波数(1~5)に変換
@@ -63,16 +71,29 @@ const waveArtwork = {
         };
         
         /**
-         * グラデーション背景を描画する関数
+         * グラデーション背景をキャッシュに作成する関数
          * 
-         * 1ピクセルずつ線を引いて、上から下へ色が変化する背景を作ります。
+         * 【パフォーマンス最適化】
+         * 背景は変化しないので、毎フレーム描画するのは無駄です。
+         * p5.jsのcreateGraphics()を使って「オフスクリーンバッファ」に
+         * 一度だけ描画し、それを保存しておきます。
+         * これにより、描画処理が大幅に軽くなります。
+         * 
+         * 【オフスクリーンバッファとは】
+         * 画面に直接描画するのではなく、メモリ上に別のキャンバスを作って
+         * そこに描画する技術です。完成した画像を画面にコピーする方が高速です。
          */
-        function drawGradientBackground() {
+        function createBackgroundCache() {
+            // オフスクリーンバッファを作成（画面と同じサイズ）
+            backgroundGraphics = p.createGraphics(p.width, p.height);
+            backgroundGraphics.colorMode(p.HSB, 360, 100, 100, 100); // カラーモードを設定
+            
+            // グラデーション背景を描画（1ピクセルずつ線を引く）
             for (let y = 0; y < p.height; y++) {
                 let hue = p.map(y, 0, p.height, 200, 260); // map: Y座標(0~画面高さ)を色相(200~260=青→紫)に変換
                 let brightness = p.map(y, 0, p.height, 95, 85); // map: Y座標(0~画面高さ)を明度(95~85)に変換
-                p.stroke(hue, 30, brightness); // 線の色を設定
-                p.line(0, y, p.width, y); // 横一本の線を描画
+                backgroundGraphics.stroke(hue, 30, brightness); // 線の色を設定
+                backgroundGraphics.line(0, y, p.width, y); // 横一本の線を描画
             }
         }
         
