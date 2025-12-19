@@ -52,7 +52,12 @@ const waveArtwork = {
         // 毎フレーム（1秒間に約60回）実行される描画処理
         p.draw = () => {
             // キャッシュした背景を描画（毎回グラデーションを描くより高速）
-            p.image(backgroundGraphics, 0, 0);
+            // 【防御的プログラミング】
+            // setup()で必ず生成されるが、万が一のエラーに備えてnullチェック
+            // 予期しない状況でもプログラムがクラッシュしないようにする
+            if (backgroundGraphics) {
+                p.image(backgroundGraphics, 0, 0);
+            }
             
             // マウスの位置で波のパラメータを変化させる
             let frequency = p.map(p.mouseX, 0, p.width, 1, 5); // map: マウスX座標(0~画面幅)を周波数(1~5)に変換
@@ -155,6 +160,16 @@ const waveArtwork = {
          * 
          * 【数式】y = yOffset + A × sin(2πfx + φ)
          * 
+         * 【thisバインディングの問題と解決策】
+         * p.sinを直接渡すと、JavaScriptの「thisバインディング」の問題が起きます。
+         * p.sinは p5インスタンス（p）のメソッドなので、thisがpを指している必要があります。
+         * しかし、関数を引数として渡すと、thisが失われてしまいます。
+         * 
+         * ❌ NG: drawWave(p.sin, ...) // thisが失われる
+         * ✅ OK: drawWave((angle) => p.sin(angle), ...) // アロー関数内でpが保持される
+         * 
+         * アロー関数でラップすることで、pのコンテキストが保持され、正しく動作します。
+         * 
          * @param {number} yOffset - Y軸の中心位置
          * @param {number} amplitude - 振幅
          * @param {number} frequency - 周波数
@@ -163,7 +178,7 @@ const waveArtwork = {
          * @param {number} weight - 線の太さ
          */
         function drawSineWave(yOffset, amplitude, frequency, phase, hue, weight) {
-            drawWave(p.sin, yOffset, amplitude, frequency, phase, hue, weight);
+            drawWave((angle) => p.sin(angle), yOffset, amplitude, frequency, phase, hue, weight);
         }
         
         /**
@@ -175,6 +190,8 @@ const waveArtwork = {
          * つまり、cos(θ) = sin(θ + π/2) という関係です。
          * sin が 0 から始まるのに対し、cos は最大値（山）から始まります。
          * 
+         * thisバインディングについてはdrawSineWaveのコメントを参照してください。
+         * 
          * @param {number} yOffset - Y軸の中心位置
          * @param {number} amplitude - 振幅
          * @param {number} frequency - 周波数
@@ -183,7 +200,7 @@ const waveArtwork = {
          * @param {number} weight - 線の太さ
          */
         function drawCosineWave(yOffset, amplitude, frequency, phase, hue, weight) {
-            drawWave(p.cos, yOffset, amplitude, frequency, phase, hue, weight);
+            drawWave((angle) => p.cos(angle), yOffset, amplitude, frequency, phase, hue, weight);
         }
         
         /**
