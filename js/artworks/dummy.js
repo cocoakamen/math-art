@@ -69,9 +69,9 @@ const dummyArtwork2 = createDummyArtwork(
 );
 
 const dummyArtwork3 = createDummyArtwork(
-    'wave',
-    '三角関数の波',
-    'sin と cos が織りなす波の重ね合わせ。周期関数の美しさとフーリエ変換の原理を視覚化します。'
+    'sierpinski',
+    'シェルピンスキーの三角形',
+    '再帰的に生成されるフラクタル図形。自己相似性を持つ美しい三角形パターンが無限に続きます。'
 );
 
 const dummyArtwork4 = createDummyArtwork(
