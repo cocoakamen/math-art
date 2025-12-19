@@ -77,14 +77,21 @@ const waveArtwork = {
         }
         
         /**
-         * サイン波（sin波）を描画する関数
+         * 波（sin, cos など）を描画する汎用関数
          * 
-         * 【数式】y = yOffset + A × sin(2πfx + φ)
+         * 【数式】y = yOffset + A × waveFunction(2πfx + φ)
          * - yOffset: 波の中心位置（画面上のどの高さに表示するか）
          * - A: 振幅（波の高さの半分）
          * - f: 周波数（画面内に何個の波を表示するか）
          * - φ: 位相（波の開始位置、時間で変化させるとアニメーションになる）
          * 
+         * 【高階関数について】
+         * この関数は waveFunction という「関数を引数として受け取る」関数です。
+         * これを「高階関数」と言います。p.sin や p.cos を渡すことで、
+         * 同じコードで異なる種類の波を描くことができます。
+         * コードの重複を減らし、保守性を高める重要なテクニックです。
+         * 
+         * @param {Function} waveFunction - 波の形を決める三角関数（p.sin や p.cos など）
          * @param {number} yOffset - Y軸の中心位置（波の基準線）
          * @param {number} amplitude - 振幅（波の高さの半分）
          * @param {number} frequency - 周波数（波の数）
@@ -92,7 +99,7 @@ const waveArtwork = {
          * @param {number} hue - 色相（0-360の色）
          * @param {number} weight - 線の太さ
          */
-        function drawSineWave(yOffset, amplitude, frequency, phase, hue, weight) {
+        function drawWave(waveFunction, yOffset, amplitude, frequency, phase, hue, weight) {
             p.noFill(); // 塗りつぶしなし
             p.strokeWeight(weight); // 線の太さを設定
             
@@ -101,8 +108,8 @@ const waveArtwork = {
             for (let x = 0; x <= p.width; x += 3) { // 3ピクセルずつ移動
                 // 角度を計算: 0から2π×frequency まで変化（2π = 360度 = 1周期）
                 let angle = (x / p.width) * p.TWO_PI * frequency + phase;
-                // y座標をsin関数で計算
-                let y = yOffset + p.sin(angle) * amplitude;
+                // y座標を指定された三角関数で計算
+                let y = yOffset + waveFunction(angle) * amplitude;
                 
                 let brightness = p.map(x, 0, p.width, 60, 90); // map: X座標(0~画面幅)を明度(60~90)に変換
                 p.stroke(hue, 70, brightness, 80); // 半透明
@@ -114,7 +121,7 @@ const waveArtwork = {
             // 波の上に小さな点を描画（波の形が分かりやすくなる）
             for (let x = 0; x <= p.width; x += 20) { // 20ピクセルごとに点を配置
                 let angle = (x / p.width) * p.TWO_PI * frequency + phase;
-                let y = yOffset + p.sin(angle) * amplitude;
+                let y = yOffset + waveFunction(angle) * amplitude;
                 
                 p.fill(hue, 80, 95, 90); // 点の色
                 p.noStroke(); // 点の輪郭なし
@@ -123,7 +130,23 @@ const waveArtwork = {
         }
         
         /**
-         * コサイン波（cos波）を描画する関数
+         * サイン波を描画する関数（drawWaveのラッパー）
+         * 
+         * 【数式】y = yOffset + A × sin(2πfx + φ)
+         * 
+         * @param {number} yOffset - Y軸の中心位置
+         * @param {number} amplitude - 振幅
+         * @param {number} frequency - 周波数
+         * @param {number} phase - 位相
+         * @param {number} hue - 色相
+         * @param {number} weight - 線の太さ
+         */
+        function drawSineWave(yOffset, amplitude, frequency, phase, hue, weight) {
+            drawWave(p.sin, yOffset, amplitude, frequency, phase, hue, weight);
+        }
+        
+        /**
+         * コサイン波を描画する関数（drawWaveのラッパー）
          * 
          * 【数式】y = yOffset + A × cos(2πfx + φ)
          * 
@@ -139,30 +162,7 @@ const waveArtwork = {
          * @param {number} weight - 線の太さ
          */
         function drawCosineWave(yOffset, amplitude, frequency, phase, hue, weight) {
-            p.noFill();
-            p.strokeWeight(weight);
-            
-            p.beginShape();
-            for (let x = 0; x <= p.width; x += 3) {
-                let angle = (x / p.width) * p.TWO_PI * frequency + phase;
-                let y = yOffset + p.cos(angle) * amplitude; // sin の代わりに cos を使用
-                
-                let brightness = p.map(x, 0, p.width, 60, 90); // map: X座標(0~画面幅)を明度(60~90)に変換
-                p.stroke(hue, 70, brightness, 80);
-                
-                p.vertex(x, y);
-            }
-            p.endShape();
-            
-            // 波の上に点を描画
-            for (let x = 0; x <= p.width; x += 20) {
-                let angle = (x / p.width) * p.TWO_PI * frequency + phase;
-                let y = yOffset + p.cos(angle) * amplitude;
-                
-                p.fill(hue, 80, 95, 90);
-                p.noStroke();
-                p.circle(x, y, 4);
-            }
+            drawWave(p.cos, yOffset, amplitude, frequency, phase, hue, weight);
         }
         
         /**
