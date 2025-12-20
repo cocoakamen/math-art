@@ -5,7 +5,7 @@ const artworks = [
     waveArtwork,
     mandelbrotArtwork,
     polygonArtwork,
-    dummyArtwork3,
+    sierpinskiArtwork,
     dummyArtwork4,
     dummyArtwork5,
     dummyArtwork6,
