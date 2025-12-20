@@ -155,16 +155,6 @@ const waveArtwork = {
          * 
          * 【数式】y = yOffset + A × sin(2πfx + φ)
          * 
-         * 【thisバインディングの問題と解決策】
-         * p.sinを直接渡すと、JavaScriptの「thisバインディング」の問題が起きます。
-         * p.sinは p5インスタンス（p）のメソッドなので、thisがpを指している必要があります。
-         * しかし、関数を引数として渡すと、thisが失われてしまいます。
-         * 
-         * ❌ NG: drawWave(p.sin, ...) // thisが失われる
-         * ✅ OK: drawWave((angle) => p.sin(angle), ...) // アロー関数内でpが保持される
-         * 
-         * アロー関数でラップすることで、pのコンテキストが保持され、正しく動作します。
-         * 
          * @param {number} yOffset - Y軸の中心位置
          * @param {number} amplitude - 振幅
          * @param {number} frequency - 周波数
@@ -173,7 +163,7 @@ const waveArtwork = {
          * @param {number} weight - 線の太さ
          */
         function drawSineWave(yOffset, amplitude, frequency, phase, hue, weight) {
-            drawWave((angle) => p.sin(angle), yOffset, amplitude, frequency, phase, hue, weight);
+            drawWave(Math.sin, yOffset, amplitude, frequency, phase, hue, weight);
         }
         
         /**
@@ -185,8 +175,6 @@ const waveArtwork = {
          * つまり、cos(θ) = sin(θ + π/2) という関係です。
          * sin が 0 から始まるのに対し、cos は最大値（山）から始まります。
          * 
-         * thisバインディングについてはdrawSineWaveのコメントを参照してください。
-         * 
          * @param {number} yOffset - Y軸の中心位置
          * @param {number} amplitude - 振幅
          * @param {number} frequency - 周波数
@@ -195,7 +183,7 @@ const waveArtwork = {
          * @param {number} weight - 線の太さ
          */
         function drawCosineWave(yOffset, amplitude, frequency, phase, hue, weight) {
-            drawWave((angle) => p.cos(angle), yOffset, amplitude, frequency, phase, hue, weight);
+            drawWave(Math.cos, yOffset, amplitude, frequency, phase, hue, weight);
         }
         
         /**
