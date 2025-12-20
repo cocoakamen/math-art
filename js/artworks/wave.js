@@ -108,11 +108,11 @@ const waveArtwork = {
          * 
          * 【高階関数について】
          * この関数は waveFunction という「関数を引数として受け取る」関数です。
-         * これを「高階関数」と言います。p.sin や p.cos を渡すことで、
-         * 同じコードで異なる種類の波を描くことができます。
+         * これを「高階関数」と言います。Math.sin や Math.cos など、
+         * 任意の三角関数を渡すことで、同じコードで異なる種類の波を描くことができます。
          * コードの重複を減らし、保守性を高める重要なテクニックです。
          * 
-         * @param {Function} waveFunction - 波の形を決める三角関数（p.sin や p.cos など）
+         * @param {Function} waveFunction - 波の形を決める関数（Math.sin、Math.cos など）
          * @param {number} yOffset - Y軸の中心位置（波の基準線）
          * @param {number} amplitude - 振幅（波の高さの半分）
          * @param {number} frequency - 周波数（波の数）
