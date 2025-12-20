@@ -52,12 +52,7 @@ const waveArtwork = {
         // 毎フレーム（1秒間に約60回）実行される描画処理
         p.draw = () => {
             // キャッシュした背景を描画（毎回グラデーションを描くより高速）
-            // 【防御的プログラミング】
-            // setup()で必ず生成されるが、万が一のエラーに備えてnullチェック
-            // 予期しない状況でもプログラムがクラッシュしないようにする
-            if (backgroundGraphics) {
-                p.image(backgroundGraphics, 0, 0);
-            }
+            p.image(backgroundGraphics, 0, 0);
             
             // マウスの位置で波のパラメータを変化させる
             let frequency = p.map(p.mouseX, 0, p.width, 1, 5); // map: マウスX座標(0~画面幅)を周波数(1~5)に変換
