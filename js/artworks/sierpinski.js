@@ -106,7 +106,7 @@ const sierpinskiArtwork = {
             
             // 頂点3 (x3, y3): 右下の頂点
             let x3 = x1 + size / 2; // 中央から右に一辺の半分
-            let y3 = y1 + h_triangle; // 上頂点から高さ分下
+            let y3 = y1 + hTriangle; // 上頂点から高さ分下
             
             // シェルピンスキーの三角形を再帰的に描画
             drawSierpinski(x1, y1, x2, y2, x3, y3, depth, hueBase);
