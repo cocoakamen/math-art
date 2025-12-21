@@ -94,15 +94,15 @@ const sierpinskiArtwork = {
             
             // 正三角形の高さ = 一辺 × √3/2（三平方の定理より）
             // Math.sqrt(): 平方根を計算（√3 ≈ 1.732）
-            let h_triangle = size * Math.sqrt(3) / 2;
+            let hTriangle = size * Math.sqrt(3) / 2;
             
             // 頂点1 (x1, y1): 上の頂点（中央上部）
             let x1 = p.width / 2; // キャンバスの中央
-            let y1 = (p.height - h_triangle) / 2; // 上下中央に配置
+            let y1 = (p.height - hTriangle) / 2; // 上下中央に配置
             
             // 頂点2 (x2, y2): 左下の頂点
             let x2 = x1 - size / 2; // 中央から左に一辺の半分
-            let y2 = y1 + h_triangle; // 上頂点から高さ分下
+            let y2 = y1 + hTriangle; // 上頂点から高さ分下
             
             // 頂点3 (x3, y3): 右下の頂点
             let x3 = x1 + size / 2; // 中央から右に一辺の半分
