@@ -68,12 +68,6 @@ const dummyArtwork2 = createDummyArtwork(
     '複素平面上の美しいフラクタル図形。z → z² + c の単純な漸化式から生まれる無限の複雑さを探索します。'
 );
 
-const dummyArtwork3 = createDummyArtwork(
-    'sierpinski',
-    'シェルピンスキーの三角形',
-    '再帰的に生成されるフラクタル図形。自己相似性を持つ美しい三角形パターンが無限に続きます。'
-);
-
 const dummyArtwork4 = createDummyArtwork(
     'lissajous',
     'リサジュー図形',
