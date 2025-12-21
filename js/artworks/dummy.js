@@ -68,12 +68,6 @@ const dummyArtwork2 = createDummyArtwork(
     '複素平面上の美しいフラクタル図形。z → z² + c の単純な漸化式から生まれる無限の複雑さを探索します。'
 );
 
-const dummyArtwork4 = createDummyArtwork(
-    'lissajous',
-    'リサジュー図形',
-    '2つの正弦波の組み合わせで描かれる曲線。x = A·sin(at + δ), y = B·sin(bt) のパラメトリック方程式が生み出す美しい軌跡。'
-);
-
 const dummyArtwork5 = createDummyArtwork(
     'rose',
     'バラ曲線',

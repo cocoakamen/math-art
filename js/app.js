@@ -6,7 +6,7 @@ const artworks = [
     mandelbrotArtwork,
     polygonArtwork,
     sierpinskiArtwork,
-    dummyArtwork4,
+    lissajousArtwork,
     dummyArtwork5,
     dummyArtwork6,
     dummyArtwork8,
